@@ -1,0 +1,180 @@
+@charset "UTF-8";
+/* ここから下に記載していく */
+
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  color: #222;
+  font-size: 16px;
+  margin: 0 auto;
+  width: 1200px;
+}
+
+h1 {
+    font-size: 24px;
+}
+
+h2 {
+    font-size: 18px;
+    margin-bottom: 60px;
+}
+
+p {
+    font-size: 16px;
+    margin-bottom: 40px;
+}
+
+.annotation-contact{
+    margin-top: 30px;
+    margin-bottom: 70px;
+}
+
+.lead{
+    padding-top: 60px;
+    padding-bottom: 30px;
+}
+
+#table-access {
+    padding-top: 60px;
+    padding-bottom: 60px;
+}
+
+#td-access tbody tr td {
+    height: 50px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding: 0;
+    text-align: left;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.english {
+    color: #ffd61a;
+}
+
+.sub-japanese {
+    margin-bottom: 60px;
+}
+
+.container {
+    margin-bottom: 30px;
+    display: flex;
+}
+
+.box {
+    color: #222;
+    font-weight: bold;
+    text-align: center;
+    line-height: 100px;
+    margin: 20px;
+}
+
+.container-news {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+  
+.box-news {
+    margin: 0 15px;
+    width: 300px;
+    overflow-wrap: break-word;
+}
+
+.image-news {
+    width: 300px;
+    margin: 30px 0px;
+}
+
+.date-news {
+    margin-bottom: 24px;
+}
+
+.image-wrap {
+    width: 600px;
+    height: 400px;
+}
+
+main {
+    display: flex;
+    margin: 0 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.box-text {
+    margin-left: 50px;
+    width: 550px;
+    text-align: left;
+    vertical-align: middle;
+    height: 400px;
+}
+
+.content-text {
+    width: 430px;
+}
+
+.main-visual {
+    background-image: url("../img/mainbg.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    text-align: center;
+    width: 1200px;
+    color: #fff;
+    padding-top: 200px;
+    padding-bottom: 200px;
+}
+
+#access {
+    background-color: #fafafa;
+}
+
+/* header
+------------------------------ */
+#header {
+  width: 100%;
+  background-color: #d5c800;
+}
+
+#header .wrapper {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 1000px;
+}
+
+#header p {
+    margin: 22px 0 0;
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+#header ul {
+    margin: 28px 0;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+#header ul li {
+    float: left;
+    margin-right: 40px;
+}
+
+#header ul li:last-child {
+    margin-right: 0;
+}
+
+footer {
+    background-color: #707070;
+    color: #fff;
+    text-align: center;
+    padding: 30px 0;
+    /* padding-bottom: 30px; */
+
+    /* position: absolute; */
+    /*←絶対位置*/
+    /* bottom: 0; */
+    /*下に固定*/
+}
