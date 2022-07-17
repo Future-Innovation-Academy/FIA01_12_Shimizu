@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import logo from './logo.svg'
 import './App.css'
-import gu from 'https://2.bp.blogspot.com/-VhlO-Yfjy_E/Uab3z3RNJQI/AAAAAAAAUVg/fX8VnSVDlWs/s800/janken_gu.png'
+// import gu from 'https://2.bp.blogspot.com/-VhlO-Yfjy_E/Uab3z3RNJQI/AAAAAAAAUVg/fX8VnSVDlWs/s800/janken_gu.png'
+
+const gu = 'https://2.bp.blogspot.com/-VhlO-Yfjy_E/Uab3z3RNJQI/AAAAAAAAUVg/fX8VnSVDlWs/s800/janken_gu.png';
 
 function getRandomInt(max) {
   return Math.floor(Math.random() * max);
@@ -40,9 +42,9 @@ function App() {
             pa
           </button>
         </p>
-        <p>
+        {/* <p>
           <img src={gu} alt="gu"/>
-        </p>
+        </p> */}
         <h3>{result}</h3>
       </header>
     </div>
