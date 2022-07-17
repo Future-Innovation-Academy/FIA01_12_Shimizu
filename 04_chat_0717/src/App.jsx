@@ -58,8 +58,14 @@ function App() {
 
   return (
     <div className="App">
+      <Add
+        addData={addData}
+        titleValue={titleValue}
+        handleInputChange={handleInputChange}
+      />
+      <hr />
       {/* 表示のロジックを記述 */}
-      <h1>データ表示</h1>
+      <h2>データ表示</h2>
 
       {/* 表示のロジックを記述していきます🤗 */}
       {/* dataというuseStateで保持した箱の中にはfirebaseのデータが収納されています */}
@@ -109,11 +115,6 @@ function App() {
       {/* <button onClick={addData}>送信</button> */}
 
       {/* 中身をAdd にお引越し */}
-      <Add
-        addData={addData}
-        titleValue={titleValue}
-        handleInputChange={handleInputChange}
-      />
     </div>
   );
 }
