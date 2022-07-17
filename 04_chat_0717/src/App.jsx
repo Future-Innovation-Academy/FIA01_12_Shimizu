@@ -64,16 +64,37 @@ function App() {
       {/* 表示のロジックを記述していきます🤗 */}
       {/* dataというuseStateで保持した箱の中にはfirebaseのデータが収納されています */}
       {/* 収納されているデータをES6のmapというおまじないを使ってぐるぐる表示させます */}
+      <table>
+        <thead>
+          <tr>
+            <th>index</th>
+            <th>item.id</th>
+            <th>item.title</th>
+          </tr>
+        </thead>
 
-      {data.map((item, index) => (
+        {data.map((item, index) => (
+          // mapを使うときは,keyという指定が必須です！忘れるとエラーが出ます🤗
+          // Warning: Each child in a list should have a unique "key" prop.
+          <tbody key={index}>
+            <tr>
+              <td>{index}</td>
+              <td>{item.id}</td>
+              <td>{item.title}</td>
+            </tr>
+          </tbody>
+        ))}
+      </table>
+
+      {/* {data.map((item, index) => (
         // mapを使うときは,keyという指定が必須です！忘れるとエラーが出ます🤗
         // Warning: Each child in a list should have a unique "key" prop.
         <div key={index}>
-          <div>{index}数字</div>
+          <div>{index}</div>
           <div>{item.id}</div>
           <div>{item.title}</div>
         </div>
-      ))}
+      ))} */}
 
       {/* hrタグは線
       <hr />
