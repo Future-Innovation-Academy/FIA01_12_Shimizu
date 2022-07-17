@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
-import logo from './logo.svg'
-import './App.css'
+import { useState, useEffect } from "react";
+import "./App.css";
+import { TextField, Button } from "@mui/material";
 
 function App() {
   const getData = () => {
@@ -10,9 +10,13 @@ function App() {
     } else {
       return [];
     }
-  }
+  };
   const [data, setData] = useState(getData);
   const [title, setTitle] = useState("");
+  const [count, setCount] = useState(0);
+  const countUp = () => {
+    setCount(count + 1);
+  };
   const handleAddSubmit = (e) => {
     e.preventDefault();
     let pushData = {
@@ -20,49 +24,39 @@ function App() {
     };
     setData([...data, pushData]);
     setTitle("");
-  }
-  useEffect(() => { localStorage.setItem("test", JSON.stringify(data)); }, [data]);
-
-  const [sessionData, setSessionData] = useState([]);
-  const [sessionTitle, setSessionTitle] = useState("");
-  const handleAddSubmit2Session = (e) => {
-    e.preventDefault();
-    let pushData = {
-      sessionTitle,
-    };
-    setSessionData([...sessionData, pushData]);
-    setSessionTitle("");
-  }
-  useEffect(() => { sessionStorage.setItem("sessionKey", JSON.stringify(sessionData)); }, [sessionData]);
+    setCount(count + 1);
+  };
+  useEffect(() => {
+    localStorage.setItem("test" + JSON.stringify(count), JSON.stringify(data));
+  }, [data]);
+  const removeData = () => {
+    localStorage.removeItem("test");
+  };
 
   return (
     <div className="App">
       <h1>localStorage</h1>
       <form onSubmit={handleAddSubmit}>
-        <input type="text"
+        <TextField
+          id="standard-basic"
+          label="追加したいテキスト"
+          variant="standard"
           required
           onChange={(e) => setTitle(e.target.value)}
-          value={title} />
-        <button type='submit'>送信</button>
+          value={title}
+        />
+        <Button variant="contained" type="submit">
+          送信
+        </Button>
       </form>
+      <Button variant="contained" onClick={removeData}>
+        削除
+      </Button>
       {data.map((item, index) => (
         <div key={index}>{item.title}</div>
       ))}
-      <hr />
-
-      <h1>sessionStorage</h1>
-      <form onSubmit={handleAddSubmit2Session} id="t">
-        <input type="text"
-          required
-          onChange={(e) => setSessionTitle(e.target.value)}
-          value={sessionTitle} />
-        <button type='submit'>送信</button>
-      </form>
-      {sessionData.map((item, index) => (
-        <div key={index}>{item.sessionTitle}</div>
-      ))}
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
