@@ -3,9 +3,7 @@ import React from "react";
 const Add = ({ addData, handleInputChange, titleValue }) => {
   return (
     <div>
-      {/* hrタグは線 */}
-      <hr />
-      <h1>登録の処理</h1>
+      <h2>登録処理</h2>
       {/* このあとuseStateを新しく記述します🤗 */}
       <p>{titleValue}</p>
 
