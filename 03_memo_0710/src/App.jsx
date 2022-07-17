@@ -13,6 +13,7 @@ function App() {
   };
   const [data, setData] = useState(getData);
   const [title, setTitle] = useState("");
+  const [key, setKey]=useState("");
   const [count, setCount] = useState(0);
   const countUp = () => {
     setCount(count + 1);
@@ -26,11 +27,21 @@ function App() {
     setTitle("");
     setCount(count + 1);
   };
+  const handleDeleteSubmit = (e) => {
+    e.preventDefault();
+    // let pushData = {
+    //   title,
+    // };
+    // setData([...data, pushData]);
+    removeData(key)
+    setKey("");
+    // setCount(count + 1);
+  };
   useEffect(() => {
     localStorage.setItem("test" + JSON.stringify(count), JSON.stringify(data));
   }, [data]);
-  const removeData = () => {
-    localStorage.removeItem("test");
+  const removeData = (key) => {
+    localStorage.removeItem(key);
   };
 
   return (
@@ -49,9 +60,19 @@ function App() {
           送信
         </Button>
       </form>
-      <Button variant="contained" onClick={removeData}>
-        削除
-      </Button>
+      <form onSubmit={handleDeleteSubmit}>
+        <TextField
+          id="standard-basic"
+          label="削除したいkey"
+          variant="standard"
+          required
+          onChange={(e) => setKey(e.target.value)}
+          value={key}
+        />
+        <Button variant="contained" type="submit">
+          削除
+        </Button>
+      </form>
       {data.map((item, index) => (
         <div key={index}>{item.title}</div>
       ))}
