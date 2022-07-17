@@ -5,6 +5,8 @@ import { TextField, Button } from "@mui/material";
 function App() {
   const getData = () => {
     const data = localStorage.getItem("test");
+    const length = localStorage.length;
+    console.log(length);
     if (data) {
       return JSON.parse(data);
     } else {
