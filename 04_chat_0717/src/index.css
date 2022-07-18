@@ -68,3 +68,26 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+
+.webcam {
+  border: 1px solid gray;
+  max-width: 100px;
+  max-height: 200px;
+  margin: 2px;
+}
+
+.inputImage {
+  display: none;
+}
+
+.outputImage {
+  border: 1px solid blue;
+  max-width: 100px;
+  max-height: 200px;
+  margin: 2px;
+}
