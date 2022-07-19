@@ -3,15 +3,12 @@ import React, { useState, useEffect } from "react";
 import { collection, query, onSnapshot, addDoc } from "firebase/firestore";
 import { db, auth } from "./firebase";
 import Add from "./Add";
-
-// import React from "react";
 import Webcam from "react-webcam";
 // import cv from "@techstark/opencv-js";
 // import { loadHaarFaceModels, detectHaarFace } from "./haarFaceDetection";
 
 function App() {
   const [modelLoaded, setModelLoaded] = React.useState(false);
-
 
   const webcamRef = React.useRef(null);
   const imgRef = React.useRef(null);
