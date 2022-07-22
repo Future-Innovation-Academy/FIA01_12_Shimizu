@@ -1,56 +1,119 @@
 import "./App.css";
 import React, { useState, useEffect } from "react";
 import { collection, query, onSnapshot, addDoc } from "firebase/firestore";
-import { db, auth } from "./firebase";
+import { db, auth, storage } from "./firebase";
 import Add from "./Add";
-import Webcam from "react-webcam";
-// import cv from "@techstark/opencv-js";
-// import { loadHaarFaceModels, detectHaarFace } from "./haarFaceDetection";
+import cv from "@techstark/opencv-js";
+import { loadHaarFaceModels, detectHaarFace } from "./haarFaceDetection";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+
+function createData(name, calories, fat, carbs, protein) {
+  return { name, calories, fat, carbs, protein };
+}
 
 function App() {
+  const [image, setImage] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const handleImage = (event) => {
+    const image = event.target.files[0];
+    setImage(image);
+  };
+
+  const onSubmit = (event) => {
+    event.preventDefault();
+    if (image === "") {
+      console.log("ファイルが選択されていません");
+    }
+    // アップロード処理
+    console.log({ image });
+    console.log(image.name);
+    const uploadTask = storage
+      .ref("新型コロナウイルス対策マニュアル.jpg")
+      .put(image);
+    uploadTask.on(
+      firebase.storage.TaskEvent.STATE_CHANGED,
+      next,
+      error,
+      complete
+    );
+  };
+  const next = (snapshot) => {
+    // 進行中のsnapshotを得る
+    // アップロードの進行度を表示
+    const percent = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+    console.log(percent + "% done");
+    console.log(snapshot);
+  };
+  const error = (error) => {
+    // エラーハンドリング
+    console.log(error);
+  };
+  const complete = () => {
+    // 完了後の処理
+    // 画像表示のため、アップロードした画像のURLを取得
+    storage
+      .ref("images")
+      .child(image.name)
+      .getDownloadURL()
+      .then((fireBaseUrl) => {
+        setImageUrl(fireBaseUrl);
+      });
+  };
   const [modelLoaded, setModelLoaded] = React.useState(false);
+
+  React.useEffect(() => {
+    loadHaarFaceModels().then(() => {
+      setModelLoaded(true);
+    });
+  }, []);
 
   const webcamRef = React.useRef(null);
   const imgRef = React.useRef(null);
   const faceImgRef = React.useRef(null);
 
-  // React.useEffect(() => {
-  //   if (!modelLoaded) return;
+  React.useEffect(() => {
+    if (!modelLoaded) return;
 
-  //   const detectFace = async () => {
-  //     const imageSrc = webcamRef.current.getScreenshot();
-  //     if (!imageSrc) return;
+    const detectFace = async () => {
+      const imageSrc = webcamRef.current.getScreenshot();
+      if (!imageSrc) return;
 
-  //     return new Promise((resolve) => {
-  //       imgRef.current.src = imageSrc;
-  //       imgRef.current.onload = () => {
-  //         try {
-  //           const img = cv.imread(imgRef.current);
-  //           detectHaarFace(img);
-  //           cv.imshow(faceImgRef.current, img);
+      return new Promise((resolve) => {
+        imgRef.current.src = imageSrc;
+        imgRef.current.onload = () => {
+          try {
+            const img = cv.imread(imgRef.current);
+            detectHaarFace(img);
+            cv.imshow(faceImgRef.current, img);
 
-  //           img.delete();
-  //           resolve();
-  //         } catch (error) {
-  //           console.log(error);
-  //           resolve();
-  //         }
-  //       };
-  //     });
-  //   };
+            img.delete();
+            resolve();
+          } catch (error) {
+            console.log(error);
+            resolve();
+          }
+        };
+      });
+    };
 
-  //   let handle;
-  //   const nextTick = () => {
-  //     handle = requestAnimationFrame(async () => {
-  //       await detectFace();
-  //       nextTick();
-  //     });
-  //   };
-  //   nextTick();
-  //   return () => {
-  //     cancelAnimationFrame(handle);
-  //   };
-  // }, [modelLoaded]);
+    let handle;
+    const nextTick = () => {
+      handle = requestAnimationFrame(async () => {
+        await detectFace();
+        nextTick();
+      });
+    };
+    nextTick();
+    return () => {
+      cancelAnimationFrame(handle);
+    };
+  }, [modelLoaded]);
   // 1. useState
   //useStateでデータを受け取れる準備をする
   const [data, setData] = useState([{ id: "", title: "" }]);
@@ -102,8 +165,22 @@ function App() {
     setTitleValue("");
   };
 
+  const rows = [
+    createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
+    createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
+    createData("Eclair", 262, 16.0, 24, 6.0),
+    createData("Cupcake", 305, 3.7, 67, 4.3),
+    createData("Gingerbread", 356, 16.0, 49, 3.9),
+  ];
+
   return (
     <div className="App">
+      {/* <h1>画像アップロード</h1>
+      <form onSubmit={onSubmit}>
+        <input type="file" onChange={handleImage} />
+        <button>Upload</button>
+      </form>
+      <img src={imageUrl} alt="uploaded" />
       <h2>Real-time Face Detection</h2>
       <Webcam
         ref={webcamRef}
@@ -112,8 +189,8 @@ function App() {
         screenshotFormat="image/jpeg"
       />
       <img className="inputImage" alt="input" ref={imgRef} />
-      {/* <canvas className="outputImage" ref={faceImgRef} /> */}
-      {/* {!modelLoaded && <div>Loading Haar-cascade face model...</div>} */}
+      <canvas className="outputImage" ref={faceImgRef} />
+      {!modelLoaded && <div>Loading Haar-cascade face model...</div>} */}
       <Add
         addData={addData}
         titleValue={titleValue}
@@ -126,27 +203,31 @@ function App() {
       {/* 表示のロジックを記述していきます🤗 */}
       {/* dataというuseStateで保持した箱の中にはfirebaseのデータが収納されています */}
       {/* 収納されているデータをES6のmapというおまじないを使ってぐるぐる表示させます */}
-      <table>
-        <thead>
-          <tr>
-            <th>index</th>
-            <th>item.id</th>
-            <th>item.title</th>
-          </tr>
-        </thead>
-
-        {data.map((item, index) => (
-          // mapを使うときは,keyという指定が必須です！忘れるとエラーが出ます🤗
-          // Warning: Each child in a list should have a unique "key" prop.
-          <tbody key={index}>
-            <tr>
-              <td>{index}</td>
-              <td>{item.id}</td>
-              <td>{item.title}</td>
-            </tr>
-          </tbody>
-        ))}
-      </table>
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell>index</TableCell>
+              <TableCell align="right">item.id</TableCell>
+              <TableCell align="right">item.title</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {data.map((item, index) => (
+              <TableRow
+                key={index}
+                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+              >
+                <TableCell component="th" scope="row">
+                  {index}
+                </TableCell>
+                <TableCell align="right">{item.id}</TableCell>
+                <TableCell align="right">{item.title}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
       {/* {data.map((item, index) => (
         // mapを使うときは,keyという指定が必須です！忘れるとエラーが出ます🤗
