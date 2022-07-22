@@ -1,10 +1,9 @@
 import "./App.css";
 import React, { useState, useEffect } from "react";
 import { collection, query, onSnapshot, addDoc } from "firebase/firestore";
-import { db, auth, storage } from "./firebase";
+import { db, auth } from "./firebase";
 import Add from "./Add";
 import cv from "@techstark/opencv-js";
-import { loadHaarFaceModels, detectHaarFace } from "./haarFaceDetection";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -12,12 +11,28 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 function createData(name, calories, fat, carbs, protein) {
   return { name, calories, fat, carbs, protein };
 }
 
 function App() {
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
   const [image, setImage] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const handleImage = (event) => {
@@ -67,53 +82,53 @@ function App() {
   };
   const [modelLoaded, setModelLoaded] = React.useState(false);
 
-  React.useEffect(() => {
-    loadHaarFaceModels().then(() => {
-      setModelLoaded(true);
-    });
-  }, []);
+  // React.useEffect(() => {
+  //   loadHaarFaceModels().then(() => {
+  //     setModelLoaded(true);
+  //   });
+  // }, []);
 
-  const webcamRef = React.useRef(null);
-  const imgRef = React.useRef(null);
-  const faceImgRef = React.useRef(null);
+  // const webcamRef = React.useRef(null);
+  // const imgRef = React.useRef(null);
+  // const faceImgRef = React.useRef(null);
 
-  React.useEffect(() => {
-    if (!modelLoaded) return;
+  // React.useEffect(() => {
+  //   if (!modelLoaded) return;
 
-    const detectFace = async () => {
-      const imageSrc = webcamRef.current.getScreenshot();
-      if (!imageSrc) return;
+  //   const detectFace = async () => {
+  //     const imageSrc = webcamRef.current.getScreenshot();
+  //     if (!imageSrc) return;
 
-      return new Promise((resolve) => {
-        imgRef.current.src = imageSrc;
-        imgRef.current.onload = () => {
-          try {
-            const img = cv.imread(imgRef.current);
-            detectHaarFace(img);
-            cv.imshow(faceImgRef.current, img);
+  //     return new Promise((resolve) => {
+  //       imgRef.current.src = imageSrc;
+  //       imgRef.current.onload = () => {
+  //         try {
+  //           const img = cv.imread(imgRef.current);
+  //           detectHaarFace(img);
+  //           cv.imshow(faceImgRef.current, img);
 
-            img.delete();
-            resolve();
-          } catch (error) {
-            console.log(error);
-            resolve();
-          }
-        };
-      });
-    };
+  //           img.delete();
+  //           resolve();
+  //         } catch (error) {
+  //           console.log(error);
+  //           resolve();
+  //         }
+  //       };
+  //     });
+  //   };
 
-    let handle;
-    const nextTick = () => {
-      handle = requestAnimationFrame(async () => {
-        await detectFace();
-        nextTick();
-      });
-    };
-    nextTick();
-    return () => {
-      cancelAnimationFrame(handle);
-    };
-  }, [modelLoaded]);
+  //   let handle;
+  //   const nextTick = () => {
+  //     handle = requestAnimationFrame(async () => {
+  //       await detectFace();
+  //       nextTick();
+  //     });
+  //   };
+  //   nextTick();
+  //   return () => {
+  //     cancelAnimationFrame(handle);
+  //   };
+  // }, [modelLoaded]);
   // 1. useState
   //useStateでデータを受け取れる準備をする
   const [data, setData] = useState([{ id: "", title: "" }]);
@@ -191,6 +206,52 @@ function App() {
       <img className="inputImage" alt="input" ref={imgRef} />
       <canvas className="outputImage" ref={faceImgRef} />
       {!modelLoaded && <div>Loading Haar-cascade face model...</div>} */}
+      <Button variant="outlined" onClick={handleClickOpen}>
+        Open form dialog
+      </Button>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Subscribe</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            To subscribe to this website, please enter your email address here.
+            We will send updates occasionally.
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="date"
+            // label="Date"
+            type="date"
+            fullWidth
+            variant="standard"
+          />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="time"
+            // label="Time"
+            type="time"
+            fullWidth
+            variant="standard"
+          />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="temperature"
+            // label="Time"
+            type="number"
+            fullWidth
+            variant="standard"
+            // InputLabelProps={{
+            //   shrink: true,
+            // }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleClose}>Subscribe</Button>
+        </DialogActions>
+      </Dialog>
       <Add
         addData={addData}
         titleValue={titleValue}
