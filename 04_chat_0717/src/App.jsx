@@ -40,47 +40,47 @@ function App() {
     setImage(image);
   };
 
-  const onSubmit = (event) => {
-    event.preventDefault();
-    if (image === "") {
-      console.log("ファイルが選択されていません");
-    }
-    // アップロード処理
-    console.log({ image });
-    console.log(image.name);
-    const uploadTask = storage
-      .ref("新型コロナウイルス対策マニュアル.jpg")
-      .put(image);
-    uploadTask.on(
-      firebase.storage.TaskEvent.STATE_CHANGED,
-      next,
-      error,
-      complete
-    );
-  };
-  const next = (snapshot) => {
-    // 進行中のsnapshotを得る
-    // アップロードの進行度を表示
-    const percent = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-    console.log(percent + "% done");
-    console.log(snapshot);
-  };
-  const error = (error) => {
-    // エラーハンドリング
-    console.log(error);
-  };
-  const complete = () => {
-    // 完了後の処理
-    // 画像表示のため、アップロードした画像のURLを取得
-    storage
-      .ref("images")
-      .child(image.name)
-      .getDownloadURL()
-      .then((fireBaseUrl) => {
-        setImageUrl(fireBaseUrl);
-      });
-  };
-  const [modelLoaded, setModelLoaded] = React.useState(false);
+  // const onSubmit = (event) => {
+  //   event.preventDefault();
+  //   if (image === "") {
+  //     console.log("ファイルが選択されていません");
+  //   }
+  //   // アップロード処理
+  //   console.log({ image });
+  //   console.log(image.name);
+  //   const uploadTask = storage
+  //     .ref("新型コロナウイルス対策マニュアル.jpg")
+  //     .put(image);
+  //   uploadTask.on(
+  //     firebase.storage.TaskEvent.STATE_CHANGED,
+  //     next,
+  //     error,
+  //     complete
+  //   );
+  // };
+  // const next = (snapshot) => {
+  //   // 進行中のsnapshotを得る
+  //   // アップロードの進行度を表示
+  //   const percent = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+  //   console.log(percent + "% done");
+  //   console.log(snapshot);
+  // };
+  // const error = (error) => {
+  //   // エラーハンドリング
+  //   console.log(error);
+  // };
+  // const complete = () => {
+  //   // 完了後の処理
+  //   // 画像表示のため、アップロードした画像のURLを取得
+  //   storage
+  //     .ref("images")
+  //     .child(image.name)
+  //     .getDownloadURL()
+  //     .then((fireBaseUrl) => {
+  //       setImageUrl(fireBaseUrl);
+  //     });
+  // };
+  // const [modelLoaded, setModelLoaded] = React.useState(false);
 
   // React.useEffect(() => {
   //   loadHaarFaceModels().then(() => {
@@ -131,24 +131,24 @@ function App() {
   // }, [modelLoaded]);
   // 1. useState
   //useStateでデータを受け取れる準備をする
-  const [data, setData] = useState([{ id: "", title: "" }]);
+  const [data, setData] = useState([{ id: "", temperature: 0 }]);
   console.log(data, "useStateの箱の方をみましょう！");
 
   //3. 登録用のuseStateを準備します🤗
-  const [titleValue, setTitleValue] = useState("");
+  const [temperature, setTemperature] = useState();
 
   //2. useEffect
   useEffect(() => {
     //2.1 query = コレクション(firebaseの箱のこと)の指定をする
     // firebaseで用意されたおまじない
-    const q = query(collection(db, "group")); //データにアクセス
+    const q = query(collection(db, "temperature")); //データにアクセス
 
     //2.2
     const unsub = onSnapshot(q, (querySnapshot) => {
       setData(
         querySnapshot.docs.map((doc) => ({
           id: doc.id,
-          title: doc.data().title,
+          temperature: doc.data().temperature,
         }))
       );
     });
@@ -160,7 +160,7 @@ function App() {
   const handleInputChange = (e) => {
     // console.log(e, "event");
     // console.log(e.target, "event target");
-    setTitleValue(e.target.value);
+    setTemperature(e.target.value);
   };
 
   //送信の処理を記述＝送信のボタンが押されたら登録の処理を実行する🤗
@@ -170,14 +170,14 @@ function App() {
 
     // firebaseへの登録の処理
     await addDoc(
-      collection(db, "group"), //場所どこ？
+      collection(db, "temperature"), //場所どこ？
       {
-        title: titleValue,
+        temperature: temperature,
       }
     );
 
     // 文字を空にします🤗
-    setTitleValue("");
+    setTemperature(null);
   };
 
   const rows = [
@@ -216,7 +216,7 @@ function App() {
             To subscribe to this website, please enter your email address here.
             We will send updates occasionally.
           </DialogContentText>
-          <TextField
+          {/* <TextField
             autoFocus
             margin="dense"
             id="date"
@@ -233,7 +233,7 @@ function App() {
             type="time"
             fullWidth
             variant="standard"
-          />
+          /> */}
           <TextField
             autoFocus
             margin="dense"
@@ -242,6 +242,8 @@ function App() {
             type="number"
             fullWidth
             variant="standard"
+            onChange={handleInputChange}
+            value={temperature}
             // InputLabelProps={{
             //   shrink: true,
             // }}
@@ -249,12 +251,12 @@ function App() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose}>Subscribe</Button>
+          <Button onClick={(handleClose, addData)}>Subscribe</Button>
         </DialogActions>
       </Dialog>
       <Add
         addData={addData}
-        titleValue={titleValue}
+        temperature={temperature}
         handleInputChange={handleInputChange}
       />
       <hr />
@@ -270,7 +272,7 @@ function App() {
             <TableRow>
               <TableCell>index</TableCell>
               <TableCell align="right">item.id</TableCell>
-              <TableCell align="right">item.title</TableCell>
+              <TableCell align="right">item.temperature</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -283,7 +285,7 @@ function App() {
                   {index}
                 </TableCell>
                 <TableCell align="right">{item.id}</TableCell>
-                <TableCell align="right">{item.title}</TableCell>
+                <TableCell align="right">{item.temperature}</TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -304,10 +306,10 @@ function App() {
       <hr />
       <h1>登録の処理</h1>
       {/* このあとuseStateを新しく記述します🤗 */}
-      {/* <p>{titleValue}</p> */}
+      {/* <p>{temperature}</p> */}
 
       {/* 入力させるinputタグを記述 */}
-      {/* <input type="text" value={titleValue} onChange={handleInputChange} /> */}
+      {/* <input type="text" value={temperature} onChange={handleInputChange} /> */}
 
       {/* 送信のボタンを記述 */}
       {/* <button onClick={addData}>送信</button> */}
