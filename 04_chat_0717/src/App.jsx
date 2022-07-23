@@ -2,7 +2,6 @@ import "./App.css";
 import React, { useState, useEffect } from "react";
 import { collection, query, onSnapshot, addDoc } from "firebase/firestore";
 import { db } from "./firebase";
-import Add from "./Add";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -20,19 +19,27 @@ import DialogTitle from "@mui/material/DialogTitle";
 
 function App() {
   const [open, setOpen] = useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
   // 1. useState
   //useStateでデータを受け取れる準備をする
   const [data, setData] = useState([{}]);
-
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+  // inputのonChangeのイベントを記述🤗
+  const handleInputChangeTemperature = (e) => {
+    setTemperature(e.target.value);
+  };
+  // inputのonChangeのイベントを記述🤗
+  const handleInputChangeDate = (e) => {
+    setDate(e.target.value);
+  };
+  // inputのonChangeのイベントを記述🤗
+  const handleInputChangeTime = (e) => {
+    setTime(e.target.value);
+  };
   //3. 登録用のuseStateを準備します🤗
   const [date, setDate] = useState();
   const [time, setTime] = useState();
@@ -43,7 +50,6 @@ function App() {
     //2.1 query = コレクション(firebaseの箱のこと)の指定をする
     // firebaseで用意されたおまじない
     const q = query(collection(db, "log")); //データにアクセス
-
     //2.2
     const unsub = onSnapshot(q, (querySnapshot) => {
       setData(
@@ -55,41 +61,13 @@ function App() {
         }))
       );
     });
-
     return () => unsub();
   }, []);
-
-  // inputのonChangeのイベントを記述🤗
-  const handleInputChangeTemperature = (e) => {
-    // console.log(e, "event");
-    console.log(e.target, "event target");
-    setTemperature(e.target.value);
-  };
-  // inputのonChangeのイベントを記述🤗
-  const handleInputChangeDate = (e) => {
-    // console.log(e, "event");
-    console.log(e.target, "event target");
-    setDate(e.target.value);
-  };
-  // inputのonChangeのイベントを記述🤗
-  const handleInputChangeTime = (e) => {
-    // console.log(e, "event");
-    console.log(e.target, "event target");
-    setTime(e.target.value);
-  };
-  // inputのonChangeのイベントを記述🤗
-  const handleInputChange = (e) => {
-    // console.log(e, "event");
-    console.log(e.target, "event target");
-    setTime(e.target.value);
-  };
 
   //送信の処理を記述＝送信のボタンが押されたら登録の処理を実行する🤗
   const addData = async () => {
     // 処理を記述していきます🤗
     // alert(1); 記述後、送信ボタンを押す→画面に変化があればコメントアウトしましょう🤗
-    console.log(date);
-    console.log(typeof date);
 
     // firebaseへの登録の処理
     await addDoc(
@@ -100,13 +78,11 @@ function App() {
         temperature: temperature,
       }
     );
-
-    setOpen(false);
-
     // 文字を空にします🤗
     setDate();
     setTime();
     setTemperature();
+    setOpen(false);
   };
 
   return (
@@ -171,11 +147,9 @@ function App() {
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>index</TableCell>
-              <TableCell align="right">item.id</TableCell>
-              <TableCell align="right">item.date</TableCell>
-              <TableCell align="right">item.time</TableCell>
-              <TableCell align="right">item.temperature</TableCell>
+              <TableCell align="right">日付</TableCell>
+              <TableCell align="right">時刻</TableCell>
+              <TableCell align="right">体温（℃）</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -184,10 +158,6 @@ function App() {
                 key={index}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
-                <TableCell component="th" scope="row">
-                  {index}
-                </TableCell>
-                <TableCell align="right">{item.id}</TableCell>
                 <TableCell align="right">{item.date}</TableCell>
                 <TableCell align="right">{item.time}</TableCell>
                 <TableCell align="right">{item.temperature}</TableCell>
