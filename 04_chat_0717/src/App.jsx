@@ -21,7 +21,9 @@ function App() {
   const [open, setOpen] = useState(false);
   // 1. useState
   //useStateでデータを受け取れる準備をする
-  const [data, setData] = useState([{}]);
+  const [data, setData] = useState([
+    { id: "", date: "", time: "", temperature: "" },
+  ]);
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -43,7 +45,7 @@ function App() {
   //3. 登録用のuseStateを準備します🤗
   const [date, setDate] = useState();
   const [time, setTime] = useState();
-  const [temperature, setTemperature] = useState(0);
+  const [temperature, setTemperature] = useState();
 
   //2. useEffect
   useEffect(() => {
@@ -91,12 +93,9 @@ function App() {
         データを追加
       </Button>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Subscribe</DialogTitle>
+        <DialogTitle>体温を記録</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            To subscribe to this website, please enter your email address here.
-            We will send updates occasionally.
-          </DialogContentText>
+          <DialogContentText></DialogContentText>
           <TextField
             autoFocus
             margin="dense"
@@ -126,14 +125,11 @@ function App() {
             variant="standard"
             onChange={handleInputChangeTemperature}
             value={temperature}
-            InputLabelProps={{
-              shrink: true,
-            }}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={addData}>Subscribe</Button>
+          <Button onClick={handleClose}>キャンセル</Button>
+          <Button onClick={addData}>登録</Button>
         </DialogActions>
       </Dialog>
       <hr />
