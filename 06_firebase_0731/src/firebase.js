@@ -1,6 +1,6 @@
 //Firebase ver9 compliant (modular)
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseApp = initializeApp({
@@ -15,3 +15,5 @@ const firebaseApp = initializeApp({
 //Firebase ver9 compliant (modular)
 export const auth = getAuth(firebaseApp);
 export const db = getFirestore(firebaseApp);
+export const storage = getStorage(firebaseApp); //追加
+export const provider = new GoogleAuthProvider();
