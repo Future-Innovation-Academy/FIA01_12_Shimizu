@@ -26,7 +26,7 @@ function App() {
     setFormData({ apikey: data.at(0).apiKey });
     console.log(data.at(0).apiKey);
     submitData.append("apikey", data.at(0).apiKey);
-    submitData.append("wav", blob, fileInput.current.files[0]);
+    submitData.append("wav", fileInput.current.files[0]);
     console.log({ submitData });
 
     const response = await axios
@@ -36,6 +36,7 @@ function App() {
         },
       })
       .then(function (response) {
+        console.log({ response });
         console.log(response.data); // レスポンスデータ
         console.log(response.status); // ステータスコード
         console.log(response.statusText); // ステータステキスト
