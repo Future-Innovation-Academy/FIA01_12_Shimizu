@@ -11,10 +11,28 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Input } from "@mui/material";
+import axios from axios
 
 function App() {
   const [open, setOpen] = React.useState(false);
   const [fileName, setFileName] = useState();
+  const [formData, setFormData] = useState({
+    apikey: "",
+  });
+  const fileInput = React.createRef();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const submitData = new FormData();
+    setFormData({ apikey: data.at(0).apiKey });
+    submitData.append("formData", JSON.stringify(formData));
+    submitData.append("wav", fileInput.current.files[0]);
+
+    await axios.post(`https://api.webempath.net/v2/analyzeWav`, submitData, {
+      headers: {
+        "content-type": "multipart/form-data",
+      },
+    });
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -105,16 +123,26 @@ function App() {
     // setPokemon(pokemonList);
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log(data);
-    console.log();
-    console.log({ fileName });
-    fetchData(fileName);
-  };
+  // const handleSubmit = (event) => {
+  //   event.preventDefault();
+  //   console.log(data);
+  //   console.log();
+  //   console.log({ fileName });
+  //   fetchData(fileName);
+  // };
   return (
     <div>
       <form onSubmit={handleSubmit}>
+        <input
+          type="file"
+          name="soundFile"
+          ref={fileInput}
+          id="soundFile"
+          accept="audio/*"
+        ></input>
+        <button type="submit">Submit</button>
+      </form>
+      {/* <form onSubmit={handleSubmit}>
         <label>
           Upload file:
           <input
@@ -125,7 +153,7 @@ function App() {
         </label>
         <br />
         <button type="submit">Submit</button>
-      </form>
+      </form> */}
       {/* <Button variant="outlined" onClick={handleClickOpen}>
         Open form dialog
       </Button>
