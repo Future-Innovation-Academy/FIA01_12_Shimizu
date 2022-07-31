@@ -2,6 +2,7 @@ import "./App.css";
 import React, { useState, useEffect } from "react";
 import { collection, query, onSnapshot } from "firebase/firestore";
 import { db } from "./firebase";
+import postData from "./postData";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
@@ -72,19 +73,31 @@ function App() {
   //   fetchData();
   // }, []);
   const fetchData = async (fileName) => {
-    console.log(data.at(0).apiKey.toString());
-    // APIのデータを取得する
-    const response = await fetch("https://api.webempath.net/v2/analyzeWav", {
-      method: "POST",
-      formData: { apiKey: data.at(0).apiKey.toString(), wav: fileName },
-    });
-    console.log({ response });
+    console.log("fetchData", data.at(0).apiKey);
+    console.log({ fileName });
+    console.log(data.at(0).apiKey);
+    // const form = { apikey: data.at(0).apiKey, wav: fileName };
+    postData(data.at(0).apiKey, fileName);
+    // formData.append("apikey", data.at(0).apiKey);
+    // formData.append("wav", fileName);
+    // console.log({ formData });
 
-    // jsonにしてjsで操作できるように変換する
-    const _ = await response.json();
-    console.log({ _ }); //jsonに変換されたデータ
-    setResult(_);
-    console.log({ result });
+    // // APIのデータを取得する
+    // const response = await fetch("https://api.webempath.net/v2/analyzeWav", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "multipart/form-data",
+    //   },
+    //   body: formData,
+    //   // formData: { apiKey: data.at(0).apiKey.toString(), wav: fileName },
+    // });
+    // console.log({ response });
+
+    // // jsonにしてjsで操作できるように変換する
+    // const _ = await response.json();
+    // console.log({ _ }); //jsonに変換されたデータ
+    // setResult(_);
+    // console.log({ result });
 
     // const pokemonList = data.results;
     // console.log({ pokemonList });
