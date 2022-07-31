@@ -11,7 +11,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Input } from "@mui/material";
-import axios from axios
+import axios from "axios";
 
 function App() {
   const [open, setOpen] = React.useState(false);
@@ -24,16 +24,25 @@ function App() {
     event.preventDefault();
     const submitData = new FormData();
     setFormData({ apikey: data.at(0).apiKey });
-    submitData.append("formData", JSON.stringify(formData));
-    submitData.append("wav", fileInput.current.files[0]);
+    console.log(data.at(0).apiKey);
+    submitData.append("apikey", data.at(0).apiKey);
+    submitData.append("wav", blob, fileInput.current.files[0]);
+    console.log({ submitData });
 
-    await axios.post(`https://api.webempath.net/v2/analyzeWav`, submitData, {
-      headers: {
-        "content-type": "multipart/form-data",
-      },
-    });
+    const response = await axios
+      .post(`https://api.webempath.net/v2/analyzeWav`, submitData, {
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+      })
+      .then(function (response) {
+        console.log(response.data); // レスポンスデータ
+        console.log(response.status); // ステータスコード
+        console.log(response.statusText); // ステータステキスト
+        console.log(response.headers); // レスポンスヘッダ
+        console.log(response.config); // コンフィグ;
+      });
   };
-
   const handleClickOpen = () => {
     setOpen(true);
   };
